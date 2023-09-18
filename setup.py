@@ -1,6 +1,6 @@
 from typing import List
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 HYPEN_E_DOT = "-e ."
 
