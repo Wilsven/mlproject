@@ -21,7 +21,17 @@ class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
 
-    def initiate_data_ingestion(self):
+    def initiate_data_ingestion(self) -> tuple(str, str):
+        """Initiates data ingestion.
+
+        Ingests data from a source (i.e. a path which is specified in the DataIngestionConfig class).
+
+        Raises:
+            CustomException: Raises a custom exception.
+
+        Returns:
+            tuple(str, str): Returns the path to the training and test data after splitting.
+        """
         logging.info("Data ingestion is initiated")
         try:
             logging.info("Reading the dataset as dataframe")

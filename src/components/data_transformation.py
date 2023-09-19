@@ -22,7 +22,17 @@ class DataTransformation:
     def __init__(self):
         self.data_transformation_config = DataTransformationConfig()
 
-    def get_data_transformer_preprocessor(self):
+    def get_data_transformer_preprocessor(self) -> ColumnTransformer:
+        """Creates a preprocessor pipeline.
+
+        Creates a preprocessor with two transformer pipelines for numerical and categorical features.
+
+        Raises:
+            CustomException: Raises a custom exception.
+
+        Returns:
+            ColumnTransformer: Preprocessor object.
+        """
         try:
             numerical_features = ["writing_score", "reading_score"]
             categorical_features = [
@@ -70,7 +80,26 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e)
 
-    def initiate_data_transformation(self, train_path, test_path):
+    def initiate_data_transformation(
+        self, train_path: str, test_path: str
+    ) -> tuple(np.ndarray, np.ndarray, str):
+        """Initiates data transformation.
+
+        Preprocesses and transforms the data. First, fits the preprocessor on the train data which
+        learns the statistics and then transform the test data.
+
+        Args:
+            train_path (str): Path to training data.
+            test_path (str): Path to testing data.
+
+        Raises:
+            CustomException: Raises a custom exception.
+
+        Returns:
+            tuple(np.ndarray, np.ndarray, str): Returns the preprocessed and transformed
+                                                train and test arrays as well as the file path
+                                                to the preprocessor.pkl file.
+        """
         try:
             train_df = pd.read_csv(train_path, index_col=False)
             test_df = pd.read_csv(test_path, index_col=False)

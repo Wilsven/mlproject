@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Dict
 
 from catboost import CatBoostRegressor
+import numpy as np
 from sklearn.ensemble import (
     AdaBoostRegressor,
     GradientBoostingRegressor,
@@ -28,7 +29,24 @@ class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
 
-    def initiate_model_trainer(self, train_arr, test_arr):
+    def initiate_model_trainer(
+        self, train_arr: np.ndarray, test_arr: np.ndarray
+    ) -> float:
+        """Initiates model trainer.
+
+        Initiates model training of various regressor models. Stores the R-squared scores
+        as well as the best parameters used to tune each regressor model.
+
+        Args:
+            train_arr (np.ndarray): Train data array. Contains the training features and labels.
+            test_arr (np.ndarray): Test data array. Contains the test features and labels.
+
+        Raises:
+            CustomException: Raises custom exception.
+
+        Returns:
+            float: The best R-squared score.
+        """
         try:
             logging.info("Splitting data into training and test sets")
             X_train, y_train, X_test, y_test = (
