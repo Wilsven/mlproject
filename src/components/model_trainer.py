@@ -2,8 +2,8 @@ import os
 from dataclasses import dataclass
 from typing import Dict
 
-from catboost import CatBoostRegressor
 import numpy as np
+from catboost import CatBoostRegressor
 from sklearn.ensemble import (
     AdaBoostRegressor,
     GradientBoostingRegressor,

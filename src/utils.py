@@ -16,7 +16,7 @@ def save_object(file_path: str, object: Any):
 
     Args:
         file_path (str): File path.
-        object (Any): An model or preprocessor object.
+        object (Any): A model or preprocessor object.
 
     Raises:
         CustomException: Raises a custom exception.
@@ -26,6 +26,28 @@ def save_object(file_path: str, object: Any):
         os.makedirs(dir_path, exist_ok=True)
         with open(file_path, "wb") as f:
             dill.dump(object, f)
+
+    except Exception as e:
+        raise CustomException(e)
+
+
+def load_object(file_path: str) -> Any:
+    """Loads an object.
+
+    Loads an object from a specific file path.
+
+    Args:
+        file_path (str): File path.
+
+    Raises:
+        CustomException: Raises a custom exception.
+
+    Returns:
+        Any: A model or preprocessor object.
+    """
+    try:
+        with open(file_path, "rb") as f:
+            return dill.load(f)
 
     except Exception as e:
         raise CustomException(e)
@@ -42,7 +64,7 @@ def evaluate_models(
     n_jobs: int = -1,
     refit: bool = False,
     verbose: int = 1,
-) -> tuple(Dict[str, float], Dict[str, Dict[str, Any]]):
+) -> tuple:
     """Evaluate regressor models.
 
     Evaludate the regressor models using grid search over all hyperparameters to get the best
@@ -64,7 +86,7 @@ def evaluate_models(
         CustomException: Raises a custom exception.
 
     Returns:
-        tuple(Dict[str, float], Dict[str, Dict[str, Any]]): Tuple of dictionaries containing models' best scores and hyperparameters.
+        tuple: Tuple of dictionaries containing models' best scores and hyperparameters.
     """
     try:
         models_report = {}
