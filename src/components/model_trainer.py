@@ -49,14 +49,66 @@ class ModelTrainer:
                 "adaboost": AdaBoostRegressor(),
             }
 
-            models_report: Dict = evaluate_models(
-                X_train, y_train, X_test, y_test, models=models
+            params_grid = {
+                "random_forest": {
+                    "criterion": [
+                        "squared_error",
+                        "friedman_mse",
+                        "absolute_error",
+                        "poisson",
+                    ],
+                    "max_features": ["sqrt", "log2", None],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "decision_tree": {
+                    "criterion": [
+                        "squared_error",
+                        "friedman_mse",
+                        "absolute_error",
+                        "poisson",
+                    ],
+                    "splitter": ["best", "random"],
+                    "max_features": ["sqrt", "log2"],
+                },
+                "gradient_boosting": {
+                    "loss": ["squared_error", "huber", "absolute_error", "quantile"],
+                    "learning_rate": [0.1, 0.01, 0.05, 0.001],
+                    "subsample": [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],
+                    "criterion": ["squared_error", "friedman_mse"],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "linear_regression": {"fit_intercept": [True, False]},
+                "k_neighbours_regressor": {
+                    "n_neighbors": [5, 7, 9, 11],
+                    "weights": ["uniform", "distance"],
+                    "algorithm": ["ball_tree", "kd_tree", "brute"],
+                },
+                "xgb": {
+                    "learning_rate": [0.1, 0.01, 0.05, 0.001],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "catboost": {
+                    "depth": [6, 8, 10],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "iterations": [30, 50, 100],
+                },
+                "adaboost": {
+                    "learning_rate": [0.1, 0.01, 0.5, 0.001],
+                    "loss": ["linear", "square", "exponential"],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+            }
+
+            models_report, models_best_params = evaluate_models(
+                X_train, y_train, X_test, y_test, models=models, params_grid=params_grid
             )
 
             # Get the model name with best score from report
             best_model_name = max(models_report, key=models_report.get)
             # Get best score
             best_score = models_report[best_model_name]
+            # Get model's best hyperparameters
+            best_params = models_best_params[best_model_name]
             # Get best model
             best_model = models[best_model_name]
 
@@ -64,7 +116,7 @@ class ModelTrainer:
                 raise CustomException("No best model found")
 
             logging.info(
-                f"{best_model_name} was the best model found with score of {best_score}"
+                f"{best_model_name} was the best model found with score of {best_score} with {best_params}"
             )
 
             save_object(
